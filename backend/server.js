@@ -5,9 +5,9 @@ require('dotenv').config();
   
 //Set up default mongoose connection
 var mongoDB = process.env.MONGODB_URI;
-mongoose.connect(mongoDB, {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(mongoDB, {useNewUrlParser: true, useUnifiedTopology: true });
 
-//Get the default connection
+//Get the default connection, useCreateIndexes: false
 var connection = mongoose.connection;
 
 connection.once('open', () => {
