@@ -1,21 +1,21 @@
 const User = require('../models/userModel');
+const userValidation = require('../validation/userValidation');
 
 const userController = {
   addUser: async (req, res) => {
-    const name = req.body.name;
-    const birthdate = req.body.birthdate;
-    const photo = req.file.filename;
+    try {
+      const { name, firstName, email, birthdate, phone, adresse, password } = req.body;
+      const errMsg = userValidation(name, firstName, email, birthdate, phone, adresse, password);
+      if(errMsg) return res.status(400).json(errMsg);
+        const photo = req.file.filename;
+        const userExist = await User.findOne({ email });
+        if (userExist) return res.status(400).json('error:' + error);
+        const user = await User.create({ name, firstName, email, photo, birthdate, phone, adresse, password });
+        return res.status(201).json(user);
 
-    const newUserData = {
-      name,
-      birthdate,
-      photo
+    } catch (error) {
+      return res.status(400).json('error:' + error);
     }
-    const newUser = new User(newUserData);
-
-    newUser.save()
-      .then(() => res.json('User Added'))
-      .catch(err => res.status(400).json('Error: ' + err));
   },
   getUser: async(req, res) => {
     try {
@@ -24,7 +24,8 @@ const userController = {
     } catch (error) {
       return res.status(404).json("error:" + error);
     }
-  }
+  },
+  
 }
 
 module.exports = userController;
