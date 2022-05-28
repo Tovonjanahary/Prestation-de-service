@@ -68,14 +68,10 @@ const CreateService = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await sendService(newService)
-        
+        await sendService(newService)     
         history.push('/services/dashboard');
-        
-        
-    };
 
-   
+    };
 
     return (
         <div className="create-service">

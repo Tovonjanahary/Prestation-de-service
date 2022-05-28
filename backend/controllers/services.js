@@ -76,7 +76,6 @@ router.route('/update/:id').post(upload.single('image'), (req, res) => {
         .catch(err => res.status(400).json('Error: '+err));
 }); 
 
-
 router.route('/add').post(upload.single('image'),async (req, res) => {
     
     const service = new Service({
