@@ -32,6 +32,7 @@ router.get('/', (req, res) => {
 
   // user routes
 router.post('/users/addUser', upload.single('photo'), userController.addUser);
+router.post('/users/signin',  userController.signin);
 router.get('/users/getUser', userController.getUser);
 
 module.exports = router;
