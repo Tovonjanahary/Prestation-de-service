@@ -5,10 +5,8 @@ import {Link} from 'react-router-dom';
 const ServiceDetails = () => {
     const {id} = useParams();
     const {data: service, isPending, error} = useFetch('http://localhost:5000/services/' +id);
-    
     return(
-        <div className="shadow-xl">
-            
+        <div className="shadow-xl">          
             {error && <div className="flex flex-col items-center justify-center">{error}</div>}
             {isPending && <div className="flex flex-col items-center justify-center">Loading...</div>}
             {service && 
@@ -43,7 +41,7 @@ const ServiceDetails = () => {
                 </div>
                 <div class="hidden lg:block lg:w-1/2 lg:relative">
                 {service.image && 
-                <img class="absolute inset-0 h-full w-full object-cover object-center" src={`../img/${service.image}`}  alt="Woman workcationing on the beach "/>}
+                <img class="absolute inset-0 h-full w-full object-cover object-center" src={`/img/${service.image}`}  alt="Woman workcationing on the beach "/>}
                 </div>
             </div>
             }

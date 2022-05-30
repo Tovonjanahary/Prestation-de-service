@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {useHistory} from 'react-router-dom';
+import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
 
 const Inscription = () => {
     const [newService, setNewService] = useState(
@@ -12,12 +13,12 @@ const Inscription = () => {
         site_web: "",
         phone: "",
         adresse: "",
-        email: ""
+        ville: ""
         }
     );
     const [picture, setPicture] = useState('');
     const history = useHistory();
-    
+    const { id } = useParams();
 
     const classStyle = {
         label: "block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2",
@@ -50,7 +51,7 @@ const Inscription = () => {
     const sendService = async (params) => {
         const result =  await axiosProvider({
             method: "POST",
-            url: "/services/add",
+            url: `/service/addService/${id}`,
             data: datas(params, "multipart/form-data"),
             headers: { 'Access-Control-Allow-Origin': true }
         });
@@ -170,15 +171,15 @@ const Inscription = () => {
                     />
                     </div>
                     <div class="w-full md:w-1/2 px-3">
-                    <label class={classStyle.label} for="email">
-                    email
+                    <label class={classStyle.label} for="ville">
+                    Ville
                     </label>
-                    <input aria-label="Enter your email"
-                    type="email" placeholder="email"
-                    id="email"
+                    <input aria-label="Enter your city"
+                    type="text" placeholder="ville"
+                    id="ville"
                     class={classStyle.input} 
-                    name="email"
-                    value={newService.email}
+                    name="ville"
+                    value={newService.ville}
                     onChange={handleChange} 
                     required
                     />

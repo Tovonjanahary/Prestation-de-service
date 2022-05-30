@@ -5,7 +5,7 @@ const User = () => {
   const [newUser, setNewUser] = useState({ name: '', firstName: '', phone: '', adresse: '', birthdate: '', photo: '' }
   );
 
-  const[users, setUsers] = useState([]);
+  // const[users, setUsers] = useState([]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

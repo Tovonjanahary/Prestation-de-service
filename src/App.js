@@ -11,6 +11,8 @@ import Details from "./components/Details";
 import Service from "./components/Services";
 import HomePage from "./components/Home";
 import Inscription from "./components/Inscription";
+import Signup from "./page/authentification/Signup";
+import Signin from "./page/authentification/Signin";
 import Footer from "./Footer";
 import NotFound from "./NotFound";
 import User from "./User";
@@ -29,9 +31,17 @@ function App() {
           <CreateService />
           <User/>
         </Route>
-        <Route path="/services/inscription">
+        <Route path="/services/inscription/:id">
           <Navbar />
           <Inscription />
+        </Route>
+        <Route path="/user/signup">
+          <Navbar />
+          <Signup/>
+        </Route>
+        <Route path="/user/signin">
+          <Navbar />
+          <Signin/>
         </Route>
         <Route path="/services/dashboard">
           <NavbarAdmin />

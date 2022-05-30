@@ -12,7 +12,7 @@ const Service = () => {
     //Trying filter
     // Title - Categorie - Sous-categorie
     useEffect(() => {
-        axios('http://localhost:5000/services')
+        axios('http://localhost:5000/service/get')
         .then(response => {
             console.log(response.data)
             setAllData(response.data);
@@ -62,7 +62,7 @@ const Service = () => {
                
                <div className="flex bg-white w-full mb-5 shadow-xl rounded-lg dark:bg-gray-300 group overflow-hidden hover:shadow-2xl transition-shadow duration-300">
                    <div className="w-5/12 p-2 dark:bg-white rounded-tl-lg rounded-bl-lg">
-                       <div style={{backgroundImage: `url(../img/${service.image})`}} className="bg-contain bg-no-repeat bg-center w-full h-full transition-transform duration-300 group-hover:transform group-hover:scale-125"></div>
+                       <div style={{backgroundImage: `url(/img/${service.image})`}} className="bg-contain bg-no-repeat bg-center w-full h-full transition-transform duration-300 group-hover:transform group-hover:scale-125"></div>
                    </div>
                    <div className="w-7/12 p-5">
                        <h1 className="md:text-2xl">{service.title.substr(0, 50)}</h1>
