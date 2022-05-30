@@ -54,6 +54,7 @@ const service = {
     try {
       let id = req.params.id;
       const service = await Service.findById(id).populate('user');
+      if(!service) return res.status(404).json({msg: "donnee introuvable"});
       return res.status(200).json(service);
     } catch (error) {
       return res.status(404).json({ error: "donnees introuvable" })
@@ -73,6 +74,16 @@ const service = {
       return res.status(201).json(service);
     } catch (error) {
       return res.status(400).json({error: error.message});
+    }
+  },
+  deleteService: async (req, res) => {
+    try {
+      let ServiceId = req.params.id;
+      const userDeleted = await Service.findByIdAndDelete(ServiceId);
+      if(!userDeleted) return res.status(404).json({ error: "ce service n'existe pas" });
+      return res.status(200).json({ msg: "service suprime avec succes" });
+    } catch (error) {
+      return res.status(400).json({ error: error.message });
     }
   }
 }

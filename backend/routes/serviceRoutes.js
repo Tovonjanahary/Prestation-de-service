@@ -28,4 +28,6 @@ let upload = multer({ storage, fileFilter });
 route.post("/service/addService/:id", upload.single('image'), service.addService);
 route.get("/service/get", protection, service.getService);
 route.get("/service/getSingleService/:id", protection, service.getSingleService);
+route.delete("/service/deleteService/:id", protection, service.deleteService);
+
 module.exports = route;
