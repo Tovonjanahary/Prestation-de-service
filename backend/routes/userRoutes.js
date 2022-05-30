@@ -4,6 +4,7 @@ const { v4: uuidv4 } = require('uuid');
 let path = require('path');
 const router = Router();
 const userController = require('../controllers/users');
+const protection = require('../middleware/authMiddleware');
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -33,6 +34,8 @@ router.get('/', (req, res) => {
   // user routes
 router.post('/users/addUser', upload.single('photo'), userController.addUser);
 router.post('/users/signin',  userController.signin);
-router.get('/users/getUser', userController.getUser);
+router.post('/users/searchUser', protection, userController.searchUser);
+router.get('/users/getUser', protection, userController.getUser);
+router.get('/users/getSingleUser/:id', protection, userController.getSingleUser);
 
 module.exports = router;

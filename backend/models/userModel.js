@@ -34,7 +34,13 @@ const userSchema = new Schema({
   password: {
     type: String,
     required: true,
-  }
+  },
+  service: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Service'
+    },
+  ]
 }, {timestamps: true});
 
 const User = mongoose.model('User', userSchema);

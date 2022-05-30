@@ -2,12 +2,15 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 require('dotenv').config();
-const Router = require('./routes/Routes');
+const userRouter = require('./routes/userRoutes');
+const serviceRouter = require('./routes/serviceRoutes');
 const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use(Router);
+app.use(userRouter);
+app.use(serviceRouter);
+
 //Set up default mongoose connection
 var mongoDB = process.env.MONGODB_URI;
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -21,7 +24,7 @@ connection.once('open', () => {
 //Bind connection to error event (to get notification of connection errors)
 connection.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 5000;
 
 try{
   app.listen(port)

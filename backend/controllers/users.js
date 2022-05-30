@@ -12,10 +12,10 @@ const generateToken = (id) => {
 const userController = {
   addUser: async (req, res) => {
     try {
-      const { name, firstName, email, photo, birthdate, phone, adresse, password } = req.body;
-      // const photo = req.file.filename;
+      const { name, firstName, email, birthdate, phone, adresse, password } = req.body;
+      const photo = req.file?.filename;
       const errMsg = userValidation(name, firstName, email, birthdate, phone, adresse, password);
-      if(errMsg) return res.status(406).json({error: errMsg});
+      if(errMsg) return res.status(406).json({ error: errMsg });
         const userExist = await User.findOne({ email });
         if(userExist) {
           return res.status(400).json({error: "cet email existe deja"})
@@ -32,7 +32,7 @@ const userController = {
           });
         }
     } catch (error) {
-      return res.status(400).json({error: error.message});
+      return res.status(400).json({ error: error.message });
     }
   },
   signin: async (req, res) => {
@@ -55,7 +55,7 @@ const userController = {
       }
     }
   },
-  getUser: async(req, res) => {
+  getUser: async (req, res) => {
     try {
       const data = await User.find()
       return res.status(200).json(data);
@@ -63,7 +63,32 @@ const userController = {
       return res.status(404).json("error:" + error);
     }
   },
-  
+  searchUser: async (req, res) => {
+    const keyword = req.query.search
+    ? {
+      $or: [
+        {name: { $regex: req.query.search, $options: 'i' }},
+        {email: { $regex: req.query.search, $options: 'i' }},
+      ]
+    }
+    : 
+    {}
+    const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
+    return res.status(200).json(users);
+  },
+  getSingleUser: async (req, res) => {
+    try {
+      let userId = req.params.id;
+      const user = await User.findById(userId).populate('service');
+      if(user) {
+        return res.status(200).json(user);
+      } else {
+        return res.status(404).json({error: "donnee introuvable"});
+      }
+    } catch (error) {
+      return res.status(404).json({error: "donnee introuvable"});
+    }
+  }
 }
 
 module.exports = userController;
