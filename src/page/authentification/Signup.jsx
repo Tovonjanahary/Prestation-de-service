@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
 const Signup = () => {
@@ -48,6 +48,13 @@ const Signup = () => {
     setPicture(URL.createObjectURL(e.target.files[0]) );
   }
 
+  useEffect(() => {
+    const user = localStorage.getItem('userLogin');
+    if(user) {
+      history.push("/")
+    }
+  },[history]);
+  
   const classStyle = {
     label: "block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2",
     select: "block appearance-none w-full bg-gray-200 border  border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500",

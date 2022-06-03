@@ -1,33 +1,15 @@
-import { useEffect, useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
-
-const NavAuth = () => {
-  return (
-    <div className="text-sm lg:flex-grow">
-      <Link to="/user/signin" className="block border h-full px-6 py-2 rounded-lg shadow-xl hover:outline-0 outline-0 bg-indigo-400 mt-4 lg:inline-block lg:mt-0 text-teal-200 mr-4">
-        Login
-      </Link>
-      <Link to="/user/signup" className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 mr-4">
-        S'inscrire
-      </Link>
-    </div>
-  )
-}
+import { Link} from 'react-router-dom';
+import NavAuth from './NavAuth';
 
 const Navbar = () => {
-  const [userInfo, setUser] = useState('');
-  const history = useHistory();
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('userLogin'));
-    setUser(user);
-  });
+  const userInfo = JSON.parse(localStorage.getItem('userLogin'));
 
   const logout = (e) => {
     e.preventDefault();
     const confirm = window.confirm("se deconnecter ?");
-    if(confirm) {
+    if (confirm) {
       localStorage.removeItem('userLogin');
-      history.push("/");
+      window.location.href = "/";
     }
   }
 
@@ -54,18 +36,15 @@ const Navbar = () => {
       </div>
       <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
         {
-          userInfo && userInfo ? (
-            <div className="text-sm lg:flex-grow">
-              <Link to={`/services/inscription/${userInfo._id}`} className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 mr-4">
-                Services
-              </Link>
-              <button onClick={logout}>Logout</button>
-            </div>
-          ) 
-          :
-          <NavAuth/>
+          !userInfo ? <NavAuth /> 
+          :   
+          <div className="text-sm lg:flex-grow">
+            <Link to={`/services/inscription/${userInfo._id}`} className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 mr-4">
+              Services
+            </Link>
+            <button onClick={logout}>Logout</button>
+          </div>         
         }
-        
       </div>
     </nav>
   );

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
@@ -15,11 +15,19 @@ const Signup = () => {
         email: newUser.email, 
         password: newUser.password });
       localStorage.setItem("userLogin", JSON.stringify(data));
-      history.push("/");
+      window.location.href = "/";
     } catch (error) {
-      setError(error.response.data.error);
+      setError(error.response.data?.error);
     }
   }
+
+
+  useEffect(() => {
+    const user = localStorage.getItem('userLogin');
+    if(user) {
+      history.push("/")
+    }
+  },[history]);
 
   const handleChange = (e) => {
     setNewUser({ ...newUser, [e.target.name]: e.target.value });

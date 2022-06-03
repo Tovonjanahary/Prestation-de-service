@@ -3,13 +3,18 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import GlobalState from './context/GlobalState';
+import Layout from './components/Layout/Layout';
+import { BrowserRouter } from 'react-router-dom/cjs/react-router-dom.min';
 
-ReactDOM.render(
-  <React.StrictMode>
+ReactDOM.render(      
+  <BrowserRouter>
     <GlobalState>
-      <App />
+        <Layout>
+          <App />
+        </Layout>
     </GlobalState>
-  </React.StrictMode>,
+  </BrowserRouter>
+,
   document.getElementById('root')
 );
 

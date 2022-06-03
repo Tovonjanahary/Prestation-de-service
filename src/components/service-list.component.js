@@ -3,7 +3,7 @@ import {Link} from 'react-router-dom';
 import {useState, useEffect} from 'react';
 
 const Services = () => {
-    const {data, isPending, error} = useFetch('http://localhost:5000/services');
+    const {data, isPending, error} = useFetch('http://localhost:5000/service/get');
     const [services, setService] = useState("");
     const classStyle = {
         container : `flex bg-white w-full mb-2 shadow-xl rounded-lg dark:bg-gray-300 group overflow-hidden hover:shadow-2xl transition-shadow duration-300`,

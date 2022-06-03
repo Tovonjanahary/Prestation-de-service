@@ -1,75 +1,54 @@
 import "./App.css";
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-
-import Navbar from './components/navbar.component';
+import { Route, Switch } from 'react-router-dom';
 import ServiceList from './components/service-list.component';
-import NavbarAdmin from "./components/navbar-admin.component";
 import CreateService from "./components/create-service.component";
 import EditService from "./components/edit-service.component";
 import ServiceDetails from "./components/service-details.component";
-import Details from "./components/Details";
-import Service from "./components/Services";
-import HomePage from "./components/Home";
-import Inscription from "./components/Inscription";
+import Details from "./page/services/Details.jsx";
+import Service from "./page/services/Services.jsx";
+import HomePage from "./page/Home.jsx";
+import Inscription from "./page/services/Inscription.jsx";
 import Signup from "./page/authentification/Signup";
 import Signin from "./page/authentification/Signin";
-import Footer from "./Footer";
-import NotFound from "./NotFound";
-import User from "./User";
+import NotFound from "./page/NotFound.jsx";
 
 function App() {
   return (
-    <Router>
       <Switch>
         <Route exact path="/">
-          <Navbar />
           <HomePage />
-          <Footer />
         </Route>
         <Route path="/services/create">
-          <NavbarAdmin />
           <CreateService />
-          <User/>
         </Route>
         <Route path="/services/inscription/:id">
-          <Navbar />
           <Inscription />
         </Route>
         <Route path="/user/signup">
-          <Navbar />
           <Signup/>
         </Route>
         <Route path="/user/signin">
-          <Navbar />
           <Signin/>
         </Route>
         <Route path="/services/dashboard">
-          <NavbarAdmin />
           <ServiceList />
         </Route>
         <Route exact path="/details/:id">
-          <Navbar />
           <Details />
-          <Footer />
         </Route>
         <Route exact path="/services/:id">
-          <NavbarAdmin />
           <ServiceDetails />
         </Route>
         <Route exact path="/services/edit/:id">
-          <NavbarAdmin />
           <EditService />
         </Route>
         <Route exact path="/services">
-          <Navbar />
           <Service />
-          <Footer />
         </Route>
         <Route exact path="*">
           <NotFound />
         </Route>
       </Switch>
-    </Router>
   );
 }
 

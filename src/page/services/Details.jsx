@@ -1,4 +1,4 @@
-import useFetch from './useFetch';
+import useFetch from '../../components/useFetch';
 import { useParams } from "react-router";
 import { Link } from 'react-router-dom';
 

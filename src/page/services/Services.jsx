@@ -1,6 +1,6 @@
 import {Link} from 'react-router-dom';
 import {useState, useEffect} from 'react';
-import beach_image from '../img/beach-work.jpg';
+import beach_image from './img/beach-work.jpg';
 import axios from 'axios';
 
 const Service = () => {
@@ -64,6 +64,7 @@ const Service = () => {
                    <div className="w-5/12 p-2 dark:bg-white rounded-tl-lg rounded-bl-lg">
                        <div style={{backgroundImage: `url(/img/${service.image})`}} className="bg-contain bg-no-repeat bg-center w-full h-full transition-transform duration-300 group-hover:transform group-hover:scale-125"></div>
                    </div>
+
                    <div className="w-7/12 p-5">
                        <h1 className="md:text-2xl">{service.title.substr(0, 50)}</h1>
                        <h3 className="text-gray-400 dark:text-gray-700">{service.categorie}</h3>
