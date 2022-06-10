@@ -52,6 +52,7 @@ const userController = {
             name: user.name,
             firstName: user.firstName,
             photo: user.photo,
+            jobTitle: user.jobTitle,
             token: generateToken(user._id)
           });
         }
@@ -62,10 +63,11 @@ const userController = {
   },
   getUser: async (req, res) => {
     try {
-      const data = await User.find()
+      const data = await User.find();
+      if(!data) return res.status(404).json({ error: "donnee introuvable"});
       return res.status(200).json(data);
     } catch (error) {
-      return res.status(404).json("error:" + error);
+      return res.status(404).json("error:" + error.message);
     }
   },
   searchUser: async (req, res) => {
@@ -84,7 +86,7 @@ const userController = {
   getSingleUser: async (req, res) => {
     try {
       let userId = req.params.id;
-      const user = await User.findById(userId).populate('service');
+      const user = await User.findById(userId).populate('post');
       if (user) {
         return res.status(200).json(user);
       } else {
@@ -92,6 +94,36 @@ const userController = {
       }
     } catch (error) {
       return res.status(404).json({ error: "donnee introuvable" });
+    }
+  },
+  deleteUser: async (req, res) => {
+    try {
+      const { id } = req.params;
+      await User.findByIdAndDelete(id);
+      return res.status(200).json({message: "supprime"});
+    } catch(error) {
+      return res.status(400).json({error: error.message});
+    }
+  },
+  updateUser: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { name, firstName, email, phone, adresse, birthdate } = req.body;
+      const photo = req.file?.filename;
+      if(!name || !firstName || !email || !phone || !adresse || !birthdate) {
+        return res.status(406).json({error: "Rmplissez la formulaire"});
+      }
+      const user = await User.findByIdAndUpdate(id, { name, firstName, email, phone, adresse, birthdate, photo }, {
+        new: true,
+        runValidators:true
+      });
+      if(!user) {
+        return res.status(400).json({error: "une erreur s'est produite"});
+      }
+      await user.save();
+      return res.status(200).json(user);
+    } catch (error) {
+      return res.status(400).json({ error: error.message });
     }
   }
 }

@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 const HomePage = () => {
 
   return (
-    <div className="home-page">
-      <div className="pt-24 bg-white-60">
+    <div className="home-page bg-white">
+      <div className="pt-24 ">
         <div className="container px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center">
           <div className="flex flex-col w-full md:w-2/5 justify-center items-start text-center md:text-left">
             <p className="uppercase tracking-loose w-full">Vous cherchez des services ?</p>

@@ -19,7 +19,7 @@ const userSchema = new Schema({
   },
   photo: {
     type: String,
-    default: "sary"
+    default: "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg"
   },
   birthdate: {
     type: String,
@@ -35,10 +35,30 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  service: [
+  jobTitle: {
+    type: String,
+    trim: true
+  },
+  categorie: {
+    type: String
+  },
+  sous_categorie: {
+    type: String
+  },
+  description: {
+    type: String
+  },
+  site_web: {
+    type: String
+  },
+  ville: {
+    type: String, 
+    default: "Fianarantsoa"
+  },
+  post: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Service'
+      ref: 'Post'
     },
   ]
 }, {timestamps: true});

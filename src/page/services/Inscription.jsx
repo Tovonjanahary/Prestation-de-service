@@ -1,23 +1,14 @@
+import axios from 'axios';
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
+import { UserState } from '../../context/GlobalState';
 
 const Inscription = () => {
-  const [newService, setNewService] = useState(
-    {
-      title: "",
-      categorie: "",
-      sous_categorie: "",
-      image: "",
-      description: "",
-      site_web: "",
-      phone: "",
-      adresse: "",
-      ville: ""
+  const [newService, setNewService] = useState({ jobTitle: "", categorie: "", sous_categorie: "", description: "", site_web: "", ville: ""
     }
   );
-  const [picture, setPicture] = useState('');
-  const history = useHistory();
+  const { userInfo } = UserState();
+  const [error, setError] = useState(false);
   const { id } = useParams();
 
   const classStyle = {
@@ -29,58 +20,30 @@ const Inscription = () => {
     selectIcon: "pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
   };
 
-  const axiosProvider = require("axios").create({
-    timeout: 120000, // 2 min
-    baseURL: 'http://localhost:5000'
-  });
-
-  const datas = (data, arg = "application/json") => {
-    if (arg === "application/json") {
-      return JSON.stringify(data);
-    } else if (arg === "multipart/form-data") {
-      const formData = new FormData();
-      Object.keys(data).forEach((key) => {
-        formData.append(key, data[key]);
-      });
-      return formData;
-    } else {
-      return data;
-    }
-  };
-
-  const sendService = async (params) => {
-    const result = await axiosProvider({
-      method: "POST",
-      url: `/service/addService/${id}`,
-      data: datas(params, "multipart/form-data"),
-      headers: { 'Access-Control-Allow-Origin': true }
-    });
-    return result;
-  }
-
   const handleChange = (e) => {
     setNewService({ ...newService, [e.target.name]: e.target.value });
   }
 
-  const handlePhoto = (e) => {
-    setNewService({ ...newService, image: e.target.files[0] });
-    setPicture(URL.createObjectURL(e.target.files[0]));
+  const handleSubmit = async (e) => {
+    try {
+      e.preventDefault();
+      const { data } = await axios.patch(`http://localhost:5000/user/completeProfile/${id}`, {...newService}, {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`
+        }
+      }
+      );
+      console.log(data);
+    } catch (error) {
+      setError(error.response.data.error);
+    }
   }
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    sendService(newService)
-    history.push('/services');
-  };
-
-
-
   return (
-    <div className="create-service">
+    <div className="create-service bg-white">
       <div className="flex flex-col
 					items-center justify-center">
         <p className="text-indigo-500 text-xl uppercase tracking-wider mb-3">
-          Ajout de nouvel service
+          MIS A JOUR DU PROFIL
         </p>
 
         <form onSubmit={handleSubmit} className="shadow-xl px-5 py-5" encType='multipart/form-data'>
@@ -90,12 +53,11 @@ const Inscription = () => {
             </label>
             <input aria-label="Enter title"
               type="text" placeholder="Title"
-              id="title"
+              id="jobTitle"
               className={classStyle.input}
-              name="title"
-              value={newService.title}
+              name="jobTitle"
+              value={newService.jobTitle}
               onChange={handleChange}
-
             />
             <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
               <label className={classStyle.label} htmlFor="grid-state">
@@ -126,7 +88,6 @@ const Inscription = () => {
                   name="sous_categorie"
                   value={newService.sous_categorie}
                   onChange={handleChange}
-                  required
                 >
                   <option value="">selectionnez...</option>
                   <option value="universite" className="uppercase">universite</option>
@@ -153,23 +114,8 @@ const Inscription = () => {
             name="description"
             value={newService.description}
             onChange={handleChange}
-            required
           ></textarea>
           <div className="flex flex-wrap -mx-3 mb-6">
-            <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-              <label className={classStyle.label} htmlFor="adresse">
-                Adresse
-              </label>
-              <input aria-label="Enter l'url de votre site web"
-                type="text" placeholder="domaine site web (facultatif)"
-                id="adresse"
-                className={classStyle.input}
-                name="adresse"
-                value={newService.adresse}
-                onChange={handleChange}
-
-              />
-            </div>
             <div className="w-full md:w-1/2 px-3">
               <label className={classStyle.label} htmlFor="ville">
                 Ville
@@ -181,7 +127,6 @@ const Inscription = () => {
                 name="ville"
                 value={newService.ville}
                 onChange={handleChange}
-                required
               />
             </div>
           </div>
@@ -197,39 +142,10 @@ const Inscription = () => {
                 name="site_web"
                 value={newService.site_web}
                 onChange={handleChange}
-
-              />
-            </div>
-            <div className="w-full md:w-1/2 px-3">
-              <label className={classStyle.label} htmlFor="phone">
-                Phone
-              </label>
-              <input aria-label="Enter your phone"
-                type="text" placeholder="Phone"
-                id="phone"
-                className={classStyle.input}
-                name="phone"
-                value={newService.phone}
-                onChange={handleChange}
-                required
               />
             </div>
           </div>
-          <label className={classStyle.label} htmlFor="image">
-            Image
-          </label>
-          <input aria-label="Enter your image"
-            type="file"
-            accept=".png, .jpg, .jpeg"
-            onChange={handlePhoto}
-            className="mb-2"
-            name="image"
-            required
-          />
-          <div className="previewProfilePic w-1/4 md:w-1/2" >
-            {picture && <img className="playerProfilePic_home_tile w-1/4 " alt="Votre logo" src={picture && picture}></img>}
-          </div>
-
+          { error && <div>{error}</div>}
           <button type="submit"
             className="bg-indigo-400 py-2 rounded-bl-lg w-full mt-4">
             Enregistrer

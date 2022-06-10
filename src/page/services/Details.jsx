@@ -4,26 +4,25 @@ import { Link } from 'react-router-dom';
 
 const Details = () => {
   const { id } = useParams();
-  const { data: service, isPending, error } = useFetch('http://localhost:5000/service/getSingleService/' + id);
-  console.log(service)
+  const { data: service, isPending, error } = useFetch('http://localhost:5000/users/getSingleUser/' + id);
 
   return (
     <div className="shadow-xl">
       {error && <div className="flex flex-col items-center justify-center">{error}</div>}
       {isPending && <div className="flex flex-col items-center justify-center">Loading...</div>}
       {service &&
-        <div className="bg-gray-100 flex">
+        <div className="bg-gray-100 flex" key={service._id}>
           <div className="px-8 py-12 max-w-md mx-auto sm:max-w-xl lg:max-w-full lg:w-1/2 lg:py-24 lg:px-12">
             <div className="xl:max-w-lg xl:ml-auto">
               {service.image &&
-                <img className="mt-6 rounded-lg shadow-xl sm:mt-8 sm:h-64 sm:w-full sm:object-cover sm:object-center lg:hidden" src={`/img/${service.image}`} alt="Woman workcationing on the beach" />}
+                <img className="mt-6 rounded-lg shadow-xl sm:mt-8 sm:h-64 sm:w-full sm:object-cover sm:object-center lg:hidden" src={`/img/${service.photo}`} alt="Woman workcationing on the beach" />}
               <span className="text-xl uppercase text-indigo-500">{'>' + service.categorie}</span>
               <div className='d-flex' style={{display: "flex", alignItems:'center'}}>
                 <div>
-                  <img width="50px" height="5px" style={{borderRadius: "50%", marginRight:"10px"}}src={`/img/${service.user[0].photo}`} alt="Woman workcationing on the beach " />
+                  <img width="50px" height="5px" style={{borderRadius: "50%", marginRight:"10px"}}src={`/img/${service.photo}`} alt="Woman workcationing on the beach " />
                 </div>
                 <p className="mt-2 text-gray-600 sm:mt-4 sm:text-xl">
-                  {service.user[0].name} {service.user[0].firstName}
+                  {service.name} {service.firstName}
                 </p>
               </div>
             
@@ -49,8 +48,8 @@ const Details = () => {
             </div>
           </div>
           <div className="hidden lg:block lg:w-1/2 lg:relative">
-            {service.image &&
-              <img className="absolute inset-0 h-full w-full object-cover object-center" src={`../img/${service.image}`} alt="Woman workcationing on the beach " />}
+            {service.photo &&
+              <img className="absolute inset-0 h-full w-full object-cover object-center" src={`../img/${service.photo}`} alt="Woman workcationing on the beach " />}
           </div>
         </div>
       }

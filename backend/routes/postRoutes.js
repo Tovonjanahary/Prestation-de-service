@@ -1,4 +1,4 @@
-const service = require("../controllers/services");
+const service = require("../controllers/Post");
 const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
 let path = require('path');
@@ -25,7 +25,7 @@ const fileFilter = (req, file, cb) => {
 
 let upload = multer({ storage, fileFilter });
 
-route.post("/service/addService/:id", upload.single('image'), service.addService);
+route.post("/service/addPost/:id", upload.single('image'), service.addPost);
 route.get("/service/get", service.getService);
 route.get("/service/getSingleService/:id", service.getSingleService);
 route.delete("/service/deleteService/:id", protection, service.deleteService);

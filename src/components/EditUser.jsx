@@ -1,33 +1,81 @@
+import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import React, { useState, useEffect } from 'react';
+import { useHistory, useParams } from 'react-router-dom/cjs/react-router-dom.min';
+import EditIcon from '@mui/icons-material/Edit';
+import CloseIcon from '@mui/icons-material/Close';
+import { IconButton } from '@mui/material';
+import { UserState } from '../context/GlobalState';
 
-const Signup = () => {
+const EditUser = ({ open, handleClose }) => {
 
-  const [newUser, setNewUser] = useState({ name: '', firstName: '', email: '', phone: '', adresse: '', birthdate: '', photo: '', password: '' });
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 600,
+    height: 400,
+    bgcolor: 'background.paper',
+    border: ' border border-indigo-200',
+    boxShadow: 24,
+  };
+
+  const [userDetails, setuseDetails] = useState('');
+  const [newUser, setNewUser] = useState({ 
+    name: userDetails && userDetails.name, 
+    firstName: '', 
+    email: '', 
+    phone: '', 
+    adresse: '', 
+    birthdate: '', 
+    photo: ''});
+    console.log(userDetails.name)
+
   const [error, setError] = useState(false);
   const [picture, setPicture] = useState('');
   const history = useHistory();
+  const { userid } = useParams();
+  const { userInfo } = UserState();
+
+  useEffect(() => {
+    (async function getUserProfile() {
+      const { data } = await axios.get(`http://localhost:5000/users/getSingleUser/${userid}`, {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`
+        }
+      }
+      )
+      setuseDetails(data);
+      
+    })();
+  }, [userid, userInfo]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-    const formData = new FormData();
-    formData.append('name', newUser.name);
-    formData.append('firstName', newUser.firstName);
-    formData.append('email', newUser.email);
-    formData.append('photo', newUser.photo);
-    formData.append('birthdate', newUser.birthdate);
-    formData.append('phone', newUser.phone);
-    formData.append('adresse', newUser.adresse);
-    formData.append('password', newUser.password);
+      const formData = new FormData();
+      formData.append('name', newUser.name);
+      formData.append('firstName', newUser.firstName);
+      formData.append('email', newUser.email);
+      formData.append('photo', newUser.photo);
+      formData.append('birthdate', newUser.birthdate);
+      formData.append('phone', newUser.phone);
+      formData.append('adresse', newUser.adresse);
+      console.log(formData)
 
-    const { data } = await axios.post('http://localhost:5000/users/addUser', formData);
-    localStorage.setItem("userLogin", JSON.stringify(data));
-      history.push("/");
+      const { data } = await axios.patch(`http://localhost:5000/users/updateUser/${userid}`, formData, {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`
+        }
+      });
+
+      console.log(data);
+      history.push(`/user/profile/${userInfo._id}`);
     } catch (error) {
-    setError(error.response.data.error);
-    }    
+      setError(error.response.data.error);
+    }
   }
 
   const handleChange = (e) => {
@@ -36,16 +84,9 @@ const Signup = () => {
 
   const handlePhoto = (e) => {
     setNewUser({ ...newUser, photo: e.target.files[0] });
-    setPicture(URL.createObjectURL(e.target.files[0]) );
+    setPicture(URL.createObjectURL(e.target.files[0]));
   }
 
-  useEffect(() => {
-    const user = localStorage.getItem('userLogin');
-    if(user) {
-      history.push("/")
-    }
-  },[history]);
-  
   const classStyle = {
     label: "block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2",
     select: "block appearance-none w-full bg-gray-200 border  border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500",
@@ -54,22 +95,25 @@ const Signup = () => {
         border-gray-200 mb-2`,
     selectIcon: "pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
   };
-
   return (
-    <div className="create-service bg-white">
-      <div className="flex flex-col
-					items-center justify-center">
-        <p className="text-indigo-500 text-xl uppercase tracking-wider mb-3">
-          S'inscrire
-        </p>
-        <form className="shadow-xl px-5 py-5" encType='multipart/form-data' onSubmit={handleSubmit}>
+    <Modal
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+    >
+      <Box sx={style} className="overflow-auto rounded-lg p-2">
+        <h6 className="sticky top-0 bg-white text-sm p-1 flex items-center justify-between font-medium">
+          <div className=" flex items-center"><EditIcon/> modification du profil</div>
+          <IconButton aria-label="close" onClick={handleClose}>
+            <CloseIcon/>
+          </IconButton>
+        </h6>
+        <form className="shadow-xl px-5 py-5 mt-2" encType='multipart/form-data' onSubmit={handleSubmit}>
           <div className="previewProfilePic w-1/4 md:w-1/2" >
-              {picture && <img className="playerProfilePic_home_tile w-1/4 " alt="sary" src={picture && picture}></img>}
+            {picture && <img className="playerProfilePic_home_tile w-1/4 " alt="sary" src={picture && picture}></img>}
           </div>
           <div className="flex flex-wrap -mx-3 mb-6">
-            <label className={classStyle.label} htmlFor="title">
-              Nom
-            </label>
             <input aria-label="Enter name"
               type="text" placeholder="Name"
               id="name"
@@ -80,9 +124,6 @@ const Signup = () => {
             />
           </div>
           <div className="flex flex-wrap -mx-3 mb-6">
-            <label className={classStyle.label} htmlFor="firstName">
-              Prenom
-            </label>
             <input aria-label="Enter firstName"
               type="text" placeholder="FirstName"
               id="title"
@@ -92,9 +133,6 @@ const Signup = () => {
               onChange={handleChange}
             />
           </div>
-          <label className={classStyle.label} htmlFor="description">
-            Email
-          </label>
           <input aria-label="Enter email"
             type="text" placeholder="Email"
             id="email"
@@ -105,9 +143,6 @@ const Signup = () => {
           />
           <div className="flex flex-wrap -mx-3 mb-6">
             <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-              <label className={classStyle.label} htmlFor="adresse">
-                Adresse
-              </label>
               <input aria-label="Enter l'url de votre site web"
                 type="text" placeholder="Adresse"
                 id="adresse"
@@ -118,9 +153,6 @@ const Signup = () => {
               />
             </div>
             <div className="w-full md:w-1/2 px-3">
-              <label className={classStyle.label} htmlFor="email">
-                Date de naissance
-              </label>
               <input aria-label="Enter your birthdate"
                 type="date" placeholder="Date de naissance"
                 id="birthdate"
@@ -133,9 +165,6 @@ const Signup = () => {
           </div>
           <div className="flex flex-wrap -mx-3 mb-6">
             <div className="w-full md:w-1/2 px-3">
-              <label className={classStyle.label} htmlFor="phone">
-                Phone
-              </label>
               <input aria-label="Enter your phone"
                 type="text" placeholder="Phone"
                 id="phone"
@@ -145,23 +174,7 @@ const Signup = () => {
                 onChange={handleChange}
               />
             </div>
-            <div className="w-full md:w-1/2 px-3">
-              <label className={classStyle.label} htmlFor="password">
-                Mot de passe
-              </label>
-              <input aria-label="Enter your password"
-                type="password" placeholder="mot de passe"
-                id="password"
-                className={classStyle.input}
-                name="password"
-                value={newUser.password}
-                onChange={handleChange}
-              />
-            </div>
           </div>
-          <label className={classStyle.label} htmlFor="image">
-            Image
-          </label>
           <input aria-label="Enter your image"
             type="file"
             accept=".png, .jpg, .jpeg"
@@ -169,23 +182,15 @@ const Signup = () => {
             name="image"
             onChange={handlePhoto}
           />
-          { error && <div className='text-danger'>{ error }</div>}
+          {error && <div className='text-danger'>{error}</div>}
           <button type="submit"
-            className="bg-indigo-400 py-2 rounded-bl-lg w-full mt-4">
-            Enregistrer
+            className="bg-indigo-400 py-2 rounded-bl-lg w-full mt-4 sticky bottom-0">
+            Valider
           </button>
         </form>
-      </div>
-      {/* {
-        users && users.map(u => 
-          <div>
-            <p>{u.name}</p>
-            <img src={`/img/${u.photo}`} alt="sary"/>
-          </div>
-        )
-      } */}
-    </div>
-  );
+      </Box>
+    </Modal>
+  )
 }
 
-export default Signup;
+export default EditUser;

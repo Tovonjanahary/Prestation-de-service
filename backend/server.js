@@ -3,13 +3,15 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 require('dotenv').config();
 const userRouter = require('./routes/userRoutes');
-const serviceRouter = require('./routes/serviceRoutes');
+const postRouter = require('./routes/postRoutes');
+const userJobRouter = require('./routes/userJobRoutes');
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 app.use(userRouter);
-app.use(serviceRouter);
+app.use(postRouter);
+app.use(userJobRouter)
 
 //Set up default mongoose connection
 var mongoDB = process.env.MONGODB_URI;
