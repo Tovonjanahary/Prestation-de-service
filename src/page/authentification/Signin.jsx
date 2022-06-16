@@ -21,6 +21,10 @@ const Signup = () => {
     }
   }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> refonte
   useEffect(() => {
     const user = localStorage.getItem('userLogin');
     if(user) {
@@ -42,7 +46,11 @@ const Signup = () => {
   };
 
   return (
+<<<<<<< HEAD
     <div className="create-service">
+=======
+    <div className="create-service bg-white">
+>>>>>>> refonte
       <div className="flex flex-col
 					items-center justify-center">
         <p className="text-indigo-500 text-xl uppercase tracking-wider mb-3">
