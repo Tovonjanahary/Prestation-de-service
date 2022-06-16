@@ -7,7 +7,7 @@ const protection = require('../middleware/authMiddleware');
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
-        cb(null, '../public/img');
+        cb(null, '../build/img');
     },
     filename: function(req, file, cb) {   
         cb(null, uuidv4() + '-' + Date.now() + path.extname(file.originalname));
