@@ -26,11 +26,6 @@ const fileFilter = (req, file, cb) => {
 
 let upload = multer({ storage, fileFilter });
 
-// home router
-router.get('/', (req, res) => {
-    res.send('Hello from express');
-  });
-
   // user routes
 router.post('/users/addUser', upload.single('photo'), userController.addUser);
 router.post('/users/signin',  userController.signin);
