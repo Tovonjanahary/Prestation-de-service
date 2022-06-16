@@ -3,6 +3,8 @@ import PostAddIcon from '@mui/icons-material/PostAdd';
 import PhoneIcon from '@mui/icons-material/Phone';
 import moment from 'moment';
 import localization from 'moment/locale/fr';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import { IconButton } from '@mui/material';
 
 const Post = ({ user }) => {
   
@@ -24,11 +26,17 @@ const Post = ({ user }) => {
       </div>
       <section>
         {
-          user && user.post.length <= 0 ? <div>Vous n'avez aucune publication</div>
+          user && user.post.length <= 0 ? <div>Aucune publication</div>
           :
-          user && user.post.map(u => (
+          user && user.post.reverse().map(u => (
             <div key={u._id} className="mt-3 bg-white p-2 rounded-md border border-indigo-200">
-              <p className='text-sm mt-2'>{u.description}</p>
+              <div className="flex items-start justify-between">
+                <p className='text-sm mt-2'>{u.description}</p>
+                <IconButton aria-label="more" >
+                  <MoreHorizIcon/>
+                </IconButton>
+              </div>  
+              <div className='text-xs'>{moment(u.createdAt).locale('fr', localization).fromNow()}</div>
               <img src={`/img/${u.image}`} alt="service" width="100%" height="100%" className="mt-2 m-auto border-2 border-white" />
             </div>
           ))

@@ -1,13 +1,13 @@
 import "./App.css";
 import { Route, Switch } from 'react-router-dom';
-import Details from "./page/services/Details.jsx";
-import Service from "./page/services/Services.jsx";
+import Details from "./page/user/Details.jsx";
+import Service from "./page/user/UserList.jsx";
 import HomePage from "./page/Home.jsx";
-import Inscription from "./page/services/Inscription.jsx";
+import Inscription from "./page/user/UpdateUserProfil.jsx";
 import Signup from "./page/authentification/Signup";
 import Signin from "./page/authentification/Signin";
 import NotFound from "./page/NotFound.jsx";
-import UserProfile from "./page/services/UserProfile.jsx";
+import UserProfile from "./page/user/UserProfile.jsx";
 
 function App() {
   return (

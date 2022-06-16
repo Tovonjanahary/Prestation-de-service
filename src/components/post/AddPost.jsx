@@ -1,15 +1,19 @@
+import { PhotoCamera } from '@mui/icons-material';
+import { IconButton } from '@mui/material';
 import axios from 'axios';
 import React, { useState } from 'react'
 import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
+import { UserState } from '../../context/GlobalState';
+import { styled } from '@mui/material/styles';
 
-const AddPost = () => {
+const AddPost = ({setuseDetails}) => {
 
   const [post, setPost] = useState({ description: "", image: "" });
   const [picture, setPicture] = useState('');
   const { userid } = useParams();
   const [error, setError] = useState(false);
+  const { userInfo } = UserState();
 
-  
   const classStyle = {
     label: "block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2",
     select: "block appearance-none w-full bg-gray-200 border  border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500",
@@ -28,19 +32,32 @@ const AddPost = () => {
     setPicture(URL.createObjectURL(e.target.files[0]));
   }
 
+  async function getUserProfile() {
+    const { data } = await axios.get(`http://localhost:5000/users/getSingleUser/${userid}`, {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`
+      }
+    });
+    setuseDetails(data);
+  }
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const formData = new FormData();
       formData.append('description', post.description);
       formData.append('image', post.image);
-      const { data } = await axios.post(`http://localhost:5000/service/addPost/${userid}`, formData);
-      console.log(data);
+      await axios.post(`http://localhost:5000/service/addPost/${userid}`, formData);
+      getUserProfile();
+      setPost({ description: "", image: "" });
+      setPicture("");
     } catch (error) {
       setError(error.response.data.error);
     }
   }
 
+  const Input = styled('input')({
+    display: 'none',
+  });
   return (
     <form action="" onSubmit={handleSubmit} encType='multipart/form-data'>
       <h2>PUBLIER QUELQUE CHOSE</h2>
@@ -64,17 +81,15 @@ const AddPost = () => {
         ></textarea>
       </div>
       <div>
-        <label className={classStyle.label} htmlFor="image">
-          Image
+        <label htmlFor="icon-button-file">
+          <Input accept="image/*" id="icon-button-file" type="file"
+            onChange={handlePhoto}
+            name="image"
+           />
+          <IconButton color="primary" aria-label="upload picture" component="span">
+            <PhotoCamera />
+          </IconButton>
         </label>
-        <input aria-label="Enter your image"
-          type="file"
-          accept=".png, .jpg, .jpeg"
-          className="mb-2"
-          name="image"
-          required
-          onChange={handlePhoto}
-        />
       </div>
       { picture && <img src={ picture && picture } alt="post pic" width="100px" height="100px"/> }
       { error && <div className='text-danger'>{ error }</div>}

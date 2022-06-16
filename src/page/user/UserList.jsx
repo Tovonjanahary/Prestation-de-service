@@ -1,9 +1,13 @@
 import { Link } from 'react-router-dom';
+import Skeleton from '../../components/Skeleton';
 import useFetch from '../../components/useFetch'
+import { UserState } from '../../context/GlobalState';
 import beach_image from './img/beach-work.jpg';
+
 const Service = () => {
 
   const { data, error, isPending } = useFetch("http://localhost:5000/users/getUser");
+  const { userInfo } = UserState();
 
   return (
 
@@ -17,7 +21,7 @@ const Service = () => {
             </label>
             <input
               placeholder=" education,home service,sport"
-              autocomplete="off"
+              autoComplete="off"
               className="shadow py-2 px-3 border border-transparent focus:outline-none focus:border-transparent text-gray-700"
               type="text"
               id="username"
@@ -25,9 +29,9 @@ const Service = () => {
             />
           </div>
           {error && <div>{error}</div>}
-          {isPending && <div>Loading...</div>}
-          {data && data.filter(u => u.jobTitle != null).map((service) => (
-            <div className="flex bg-white w-full mb-5 shadow-xl rounded-lg dark:bg-gray-300 group overflow-hidden hover:shadow-2xl transition-shadow duration-300" key={data._id}>
+          { isPending && <Skeleton/> }       
+          {data && data.filter(u => u.jobTitle != null && userInfo._id !== u._id).map((service) => (
+            <div className="flex bg-white w-full mb-5 shadow-xl rounded-lg dark:bg-gray-300 group overflow-hidden hover:shadow-2xl transition-shadow duration-300" key={service._id}>
               <div className="w-5/12 p-2 dark:bg-white rounded-tl-lg rounded-bl-lg">
                 <div style={{ backgroundImage: `url(/img/${service.photo})` }} className="bg-contain bg-no-repeat bg-center w-full h-full transition-transform duration-300 group-hover:transform group-hover:scale-125"></div>
               </div>

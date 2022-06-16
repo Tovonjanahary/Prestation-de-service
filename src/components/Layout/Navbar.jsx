@@ -4,8 +4,8 @@ import NavAuth from './NavAuth';
 import HomeIcon from '@mui/icons-material/Home';
 import DesignServicesIcon from '@mui/icons-material/DesignServices';
 import AddIcCallIcon from '@mui/icons-material/AddIcCall';
-import SearchIcon from '@mui/icons-material/Search';
 import Profil from './Profil';
+import SideDrawer from '../SideDrawer';
 
 const Navbar = () => {
   const userInfo = JSON.parse(localStorage.getItem('userLogin'));
@@ -22,16 +22,12 @@ const Navbar = () => {
           <svg className="fill-current h-3 w-3" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>Menu</title><path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" /></svg>
         </button>
       </div>
-      <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
+      <div className="w-full block flex-grow lg:flex lg:items-end lg:w-auto">
         <div className="text-sm lg:flex-grow">
-          <SearchIcon/>
-          <input aria-label="Enter title" className='bg-gray-200 p-1.5 rounded-md' placeholder='recherche'/>
+          <SideDrawer/>
         </div>
       </div>
-      <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
-        {
-          !userInfo ? <NavAuth /> 
-          :   
+      <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto"> 
           <div className="text-sm flex flex-row items-center">
             <div className="flex items-end text-base text-gray-700">
               <HomeIcon/>
@@ -51,15 +47,18 @@ const Navbar = () => {
                 Contact
               </Link>
             </div>
-            <div className="basis-1/2">
-              <div className="relative basis-1/2 flex flex-row basis-1/2 items-center">
-                <img style={{ borderRadius: "50%" }} width="20px" height="20px" src={`/img/${userInfo.photo}`} alt={userInfo.name} onClick={() => {setShowProfil(!showProfil)}}/>
-                <svg className="fill-current h-4 w-4 basis-1/2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" onClick={() => {setShowProfil(!showProfil)}}/></svg>
-                { showProfil ? <div className='absolute bottom-0 left-0 top-14 z-40 -left-10 shadow-lg'><Profil/></div>: "" } 
+            {
+              !userInfo ? <NavAuth /> 
+              : 
+              <div className="basis-1/2">
+                <div className="relative basis-1/2 flex flex-row basis-1/2 items-center">
+                  <img style={{ borderRadius: "50%" }} width="20px" height="20px" src={`/img/${userInfo.photo}`} alt={userInfo.name} onClick={() => {setShowProfil(!showProfil)}}/>
+                  <svg className="fill-current h-4 w-4 basis-1/2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" onClick={() => {setShowProfil(!showProfil)}}/></svg>
+                  { showProfil ? <div className='absolute bottom-0 left-0 top-14 z-40 -left-10 shadow-lg'><Profil/></div>: "" } 
+                </div>
               </div>
-            </div>
+            }          
           </div>                 
-        }
       </div>
     </nav>
   );

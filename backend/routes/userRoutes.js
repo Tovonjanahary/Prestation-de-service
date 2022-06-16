@@ -34,7 +34,7 @@ router.get('/', (req, res) => {
   // user routes
 router.post('/users/addUser', upload.single('photo'), userController.addUser);
 router.post('/users/signin',  userController.signin);
-router.post('/users/searchUser', protection, userController.searchUser);
+router.get('/users/searchUser', userController.searchUser);
 router.get('/users/getUser', userController.getUser);
 router.get('/users/getSingleUser/:id', userController.getSingleUser);
 router.delete('/users/deleteUser/:id', protection, userController.deleteUser);

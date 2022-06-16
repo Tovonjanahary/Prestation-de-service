@@ -3,15 +3,16 @@ import React, { useEffect, useState } from 'react'
 import { Link, Route, Switch, useParams, useRouteMatch } from 'react-router-dom'
 import Contact from '../../components/Contact';
 import AboutUser from '../../components/AboutUser';
-import Post from '../../components/Post.jsx';
+import Post from '../../components/post/PostList.jsx';
 import Photo from '../../components/Photo';
 import { Button, IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import AddTaskIcon from '@mui/icons-material/AddTask';
-import AddPost from '../../components/AddPost';
+import AddPost from '../../components/post/AddPost';
 import PhoneIcon from '@mui/icons-material/Phone';
 import { UserState } from '../../context/GlobalState';
-import EditUser from '../../components/EditUser.jsx';
+import EditUser from '../user/EditUser';
+import Suggestion from '../../components/Suggestion';
 
 const UserProfile = () => {
   const { userInfo } = UserState();
@@ -24,15 +25,18 @@ const UserProfile = () => {
   const currentUser = userInfo._id === userid;
 
   useEffect(() => {
+    const abortController = new AbortController();
     (async function getUserProfile() {
       const { data } = await axios.get(`http://localhost:5000/users/getSingleUser/${userid}`, {
         headers: {
           Authorization: `Bearer ${userInfo.token}`
         }
-      }
+      }, { signal: abortController.signal }
       )
       setuseDetails(data);
     })();
+
+    return () => abortController.abort();
   }, [userid, userInfo]);
 
   return (
@@ -49,37 +53,37 @@ const UserProfile = () => {
                     <p className='text-base text-grey'>{userDetails.jobTitle}</p>
                   </section>
                   {
-                    currentUser ? 
-                    <IconButton aria-label="delete" onClick={handleOpen}>
-                      <EditIcon/>
-                    </IconButton>
-                    : ""
+                    currentUser ?
+                      <IconButton aria-label="delete" onClick={handleOpen}>
+                        <EditIcon />
+                      </IconButton>
+                      : ""
                   }
-                  
+
                 </div>
               </section>
               <section className='mt-2'>
                 {
                   currentUser ?
-                  <>
-                    {
-                      userDetails && userDetails.jobTitle == null ?
-                        <>
-                          <div className='text-xs m-1'>Remplissez votre profil afin que quelqu'un puisse vous voir</div>
+                    <>
+                      {
+                        userDetails && userDetails.jobTitle == null ?
+                          <>
+                            <div className='text-xs m-1'>Remplissez votre profil afin que quelqu'un puisse vous voir</div>
+                            <Button variant="outlined" startIcon={<AddTaskIcon />}>
+                              <Link to={`/services/inscription/${userDetails._id}`}>Completez votre profil</Link>
+                            </Button>
+                          </> :
                           <Button variant="outlined" startIcon={<AddTaskIcon />}>
-                            <Link to={`/services/inscription/${userDetails._id}`}>Completez votre profil</Link>
+                            Votre profil est a jour
                           </Button>
-                        </> : 
-                        <Button variant="outlined" startIcon={<AddTaskIcon />}>
-                          Votre profil est a jour
-                        </Button> 
-                    }
-                  </> : 
-                  <Button variant="outlined" startIcon={<PhoneIcon />}>
-                    Contacter
-                  </Button>
+                      }
+                    </> :
+                    <Button variant="outlined" startIcon={<PhoneIcon />}>
+                      Contacter
+                    </Button>
                 }
-                
+
               </section>
               <div className="container ml-5 flex flex-row justify-between mt-4 w-96 font-bold pb-2">
                 <Link to={`${url}`}>Post</Link>
@@ -103,10 +107,14 @@ const UserProfile = () => {
           </Switch>
         </section>
         <section className='bg-white flex-auto w-32 ml-5 rounded-md p-3 sticky top-20 border border-indigo-200'>
-          <AddPost />
+          {
+            currentUser ? <AddPost setuseDetails={setuseDetails}/>
+            : <Suggestion/>
+          }
+          
         </section>
       </div>
-      <EditUser open={open} handleClose={handleClose} userDetails={userDetails && userDetails}/>
+      <EditUser open={open} handleClose={handleClose} userDetails={userDetails && userDetails} setuseDetails={setuseDetails}/>
     </div>
   )
 }

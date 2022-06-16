@@ -26,8 +26,8 @@ const fileFilter = (req, file, cb) => {
 let upload = multer({ storage, fileFilter });
 
 route.post("/service/addPost/:id", upload.single('image'), service.addPost);
-route.get("/service/get", service.getService);
-route.get("/service/getSingleService/:id", service.getSingleService);
-route.delete("/service/deleteService/:id", protection, service.deleteService);
+route.get("/service/get", service.getPost);
+route.get("/service/getSingleService/:id", service.getSinglePost);
+route.delete("/service/deleteService/:id", protection, service.deletePost);
 
 module.exports = route;

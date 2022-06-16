@@ -63,7 +63,7 @@ const userController = {
   },
   getUser: async (req, res) => {
     try {
-      const data = await User.find();
+      const data = await User.find().sort({createdAt: 'DESC'});
       if(!data) return res.status(404).json({ error: "donnee introuvable"});
       return res.status(200).json(data);
     } catch (error) {
@@ -76,17 +76,18 @@ const userController = {
         $or: [
           { name: { $regex: req.query.search, $options: 'i' } },
           { email: { $regex: req.query.search, $options: 'i' } },
+          { jobTitle: { $regex: req.query.search, $options: 'i' } },
         ]
       }
       :
       {}
-    const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
+    const users = await User.find(keyword);
     return res.status(200).json(users);
   },
   getSingleUser: async (req, res) => {
     try {
       let userId = req.params.id;
-      const user = await User.findById(userId).populate('post');
+      const user = await User.findById(userId, '-password').populate('post').sort({createdAt: 'DESC'});
       if (user) {
         return res.status(200).json(user);
       } else {
@@ -109,11 +110,10 @@ const userController = {
     try {
       const { id } = req.params;
       const { name, firstName, email, phone, adresse, birthdate } = req.body;
-      const photo = req.file?.filename;
       if(!name || !firstName || !email || !phone || !adresse || !birthdate) {
-        return res.status(406).json({error: "Rmplissez la formulaire"});
+        return res.status(406).json({error: "Remplissez la formulaire"});
       }
-      const user = await User.findByIdAndUpdate(id, { name, firstName, email, phone, adresse, birthdate, photo }, {
+      const user = await User.findByIdAndUpdate(id, { name, firstName, email, phone, adresse, birthdate }, {
         new: true,
         runValidators:true
       });

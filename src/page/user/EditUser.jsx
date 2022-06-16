@@ -2,13 +2,13 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
-import { useHistory, useParams } from 'react-router-dom/cjs/react-router-dom.min';
+import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
 import EditIcon from '@mui/icons-material/Edit';
 import CloseIcon from '@mui/icons-material/Close';
 import { IconButton } from '@mui/material';
-import { UserState } from '../context/GlobalState';
+import { UserState } from '../../context/GlobalState';
 
-const EditUser = ({ open, handleClose }) => {
+const EditUser = ({ open, handleClose, setuseDetails }) => {
 
   const style = {
     position: 'absolute',
@@ -21,23 +21,21 @@ const EditUser = ({ open, handleClose }) => {
     border: ' border border-indigo-200',
     boxShadow: 24,
   };
-
-  const [userDetails, setuseDetails] = useState('');
-  const [newUser, setNewUser] = useState({ 
-    name: userDetails && userDetails.name, 
-    firstName: '', 
-    email: '', 
-    phone: '', 
-    adresse: '', 
-    birthdate: '', 
-    photo: ''});
-    console.log(userDetails.name)
+  const [newUser, setNewUser] = useState({ name: '', firstName: '', email: '', phone: '', adresse: '', birthdate: ''
+  });
 
   const [error, setError] = useState(false);
-  const [picture, setPicture] = useState('');
-  const history = useHistory();
   const { userid } = useParams();
   const { userInfo } = UserState();
+
+  const getUserProfile = async () => {
+    const { data } = await axios.get(`http://localhost:5000/users/getSingleUser/${userid}`, {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`
+      }
+    });
+    setuseDetails(data);
+    };
 
   useEffect(() => {
     (async function getUserProfile() {
@@ -47,32 +45,28 @@ const EditUser = ({ open, handleClose }) => {
         }
       }
       )
-      setuseDetails(data);
-      
+      setNewUser({
+        name: data.name,
+        firstName: data.firstName,
+        email: data.email,
+        phone: data.phone,
+        adresse: data.adresse,
+        birthdate: data.birthdate,
+      })
     })();
   }, [userid, userInfo]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const formData = new FormData();
-      formData.append('name', newUser.name);
-      formData.append('firstName', newUser.firstName);
-      formData.append('email', newUser.email);
-      formData.append('photo', newUser.photo);
-      formData.append('birthdate', newUser.birthdate);
-      formData.append('phone', newUser.phone);
-      formData.append('adresse', newUser.adresse);
-      console.log(formData)
-
-      const { data } = await axios.patch(`http://localhost:5000/users/updateUser/${userid}`, formData, {
+      await axios.patch(`http://localhost:5000/users/updateUser/${userid}`, {...newUser}, {
         headers: {
           Authorization: `Bearer ${userInfo.token}`
         }
       });
-
-      console.log(data);
-      history.push(`/user/profile/${userInfo._id}`);
+      // window.location.href = `/user/profile/${userid}`;
+      getUserProfile();
+      handleClose();
     } catch (error) {
       setError(error.response.data.error);
     }
@@ -80,11 +74,6 @@ const EditUser = ({ open, handleClose }) => {
 
   const handleChange = (e) => {
     setNewUser({ ...newUser, [e.target.name]: e.target.value });
-  }
-
-  const handlePhoto = (e) => {
-    setNewUser({ ...newUser, photo: e.target.files[0] });
-    setPicture(URL.createObjectURL(e.target.files[0]));
   }
 
   const classStyle = {
@@ -110,9 +99,6 @@ const EditUser = ({ open, handleClose }) => {
           </IconButton>
         </h6>
         <form className="shadow-xl px-5 py-5 mt-2" encType='multipart/form-data' onSubmit={handleSubmit}>
-          <div className="previewProfilePic w-1/4 md:w-1/2" >
-            {picture && <img className="playerProfilePic_home_tile w-1/4 " alt="sary" src={picture && picture}></img>}
-          </div>
           <div className="flex flex-wrap -mx-3 mb-6">
             <input aria-label="Enter name"
               type="text" placeholder="Name"
@@ -175,13 +161,6 @@ const EditUser = ({ open, handleClose }) => {
               />
             </div>
           </div>
-          <input aria-label="Enter your image"
-            type="file"
-            accept=".png, .jpg, .jpeg"
-            className="mb-2"
-            name="image"
-            onChange={handlePhoto}
-          />
           {error && <div className='text-danger'>{error}</div>}
           <button type="submit"
             className="bg-indigo-400 py-2 rounded-bl-lg w-full mt-4 sticky bottom-0">
