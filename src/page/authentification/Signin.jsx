@@ -11,9 +11,10 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.post('http://localhost:5000/users/signin', { 
-        email: newUser.email, 
-        password: newUser.password });
+      const { data } = await axios.post('http://localhost:5000/users/signin', {
+        email: newUser.email,
+        password: newUser.password
+      });
       localStorage.setItem("userLogin", JSON.stringify(data));
       window.location.href = "/";
     } catch (error) {
@@ -21,16 +22,12 @@ const Signup = () => {
     }
   }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> refonte
   useEffect(() => {
     const user = localStorage.getItem('userLogin');
-    if(user) {
+    if (user) {
       history.push("/")
     }
-  },[history]);
+  }, [history]);
 
   const handleChange = (e) => {
     setNewUser({ ...newUser, [e.target.name]: e.target.value });
@@ -46,49 +43,45 @@ const Signup = () => {
   };
 
   return (
-<<<<<<< HEAD
-    <div className="create-service">
-=======
-    <div className="create-service bg-white">
->>>>>>> refonte
-      <div className="flex flex-col
+      <div className="create-service bg-white">
+        <div className="flex flex-col
 					items-center justify-center">
-        <p className="text-indigo-500 text-xl uppercase tracking-wider mb-3">
-          Connexion
-        </p>
-        <form className="shadow-xl px-5 py-5" onSubmit={handleSubmit}>
-          <label className={classStyle.label} htmlFor="description">
-            Email
-          </label>
-          <input aria-label="Enter email"
-            type="text" placeholder="Email"
-            id="email"
-            className={classStyle.input}
-            name="email"
-            value={newUser.email}
-            onChange={handleChange}
-          />
-          <label className={classStyle.label} htmlFor="password">
-            Mot de passe
-          </label>
-          <input aria-label="Enter your password"
-            type="password" placeholder="mot de passe"
-            id="password"
-            className={classStyle.input}
-            name="password"
-            value={newUser.password}
-            onChange={handleChange}
-          />
-          {error && <div className='text-danger'>{error}</div>}
-          <button type="submit"
-            className="bg-indigo-400 py-2 rounded-bl-lg w-full mt-4">
+          <p className="text-indigo-500 text-xl uppercase tracking-wider mb-3">
             Connexion
-          </button>
-          <div className='pt-5'>Vous n'avez pas de compte? <Link to="/user/signup">S'inscrire</Link></div>
-        </form>
+          </p>
+          <form className="shadow-xl px-5 py-5" onSubmit={handleSubmit}>
+            <label className={classStyle.label} htmlFor="description">
+              Email
+            </label>
+            <input aria-label="Enter email"
+              type="text" placeholder="Email"
+              id="email"
+              className={classStyle.input}
+              name="email"
+              value={newUser.email}
+              onChange={handleChange}
+            />
+            <label className={classStyle.label} htmlFor="password">
+              Mot de passe
+            </label>
+            <input aria-label="Enter your password"
+              type="password" placeholder="mot de passe"
+              id="password"
+              className={classStyle.input}
+              name="password"
+              value={newUser.password}
+              onChange={handleChange}
+            />
+            {error && <div className='text-danger'>{error}</div>}
+            <button type="submit"
+              className="bg-indigo-400 py-2 rounded-bl-lg w-full mt-4">
+              Connexion
+            </button>
+            <div className='pt-5'>Vous n'avez pas de compte? <Link to="/user/signup">S'inscrire</Link></div>
+          </form>
+        </div>
       </div>
-    </div>
-  );
+      );
 }
 
 export default Signup;
